@@ -50,7 +50,7 @@ function init() {
 
 
     // pupulate meshes
-    populateBoxesPlanar();
+    populateBoxes();
 
 
     // renderer settings
@@ -117,11 +117,11 @@ function init() {
         return group;
     }
 
-    // populate 100 boxes on plain
-    function populateBoxesPlanar() {
+    // populate 100 boxes
+    function populateBoxes() {
         for (let i = -500; i < 500; i += 100) {
             for (let j = -500; j < 500; j += 100) {
-                let box = makeBox(i, j, 0);
+                let box = makeBox(i, j, Math.random() * 500 - 250);
                 scene.add(box);
             }
         }
