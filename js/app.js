@@ -123,18 +123,25 @@ class BoxScene {
     populateBoxes(width = 10) {
 
         if (!(Number(width) === width && width % 1 === 0 && width > 0)) {
-            throw new Error('Wrong boxes matrix width parameter');
+            throw new Error('Wrong box matrix width parameter');
         }
 
         let step = 100;
         let bound = width / 2 * step;
 
+        let boxNumber = 0;
+
         for (let i = -bound; i < bound; i += step) {
             for (let j = -bound; j < bound; j += step) {
+
                 let box = this.makeBox(i, j, Math.random() * 500 - 250);
                 this.scene.add(box);
+
+                boxNumber++;
             }
         }
+
+        return boxNumber;
     }
 
     // render scene
@@ -190,18 +197,25 @@ let boxScene = new BoxScene(THREE);
 
 
 try {
+
+    // append container
     let container = boxScene.init();
-
-
     document.body.appendChild(container);
 
-
-    boxScene.populateBoxes(10);
-    boxScene.animate();
 
     // event listeners
     document.addEventListener('mousedown', boxScene.onDocumentMouseDown.bind(boxScene), false);
     window.addEventListener('resize', boxScene.onWindowResize.bind(boxScene), false);
+
+
+    // draw boxes
+    let boxNum = boxScene.populateBoxes(10);
+
+    console.log(`${boxNum} boxes created`);
+
+    // animate
+    boxScene.animate();
+
 
 } catch(err) {
     console.error(err);
