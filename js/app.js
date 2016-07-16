@@ -69,7 +69,7 @@ function init() {
     container.appendChild( renderer.domElement );
 
     // make box with coordinates x, y, z
-    function makeBox(x, y, z) {
+    function makeBox(x = 0, y = 0, z = 0) {
 
         // create basic wireframe box
         let cubeGeometry = new THREE.BoxGeometry( 40, 40, 40 );
