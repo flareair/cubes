@@ -18,6 +18,7 @@ class BoxScene {
         this.scene = {};
         this.renderer = {};
 
+        // animate function
         this.animate = () => {
 
             requestAnimationFrame(this.animate);
@@ -121,14 +122,17 @@ class BoxScene {
     }
 
     // populate matrixWidth^2 boxes
-    populateBoxes(matrixWidth = 10) {
+    populateBoxes(width = 10) {
+
+        if (!(Number(width) === width && width % 1 === 0 && width > 0)) {
+            throw new Error('Wrong boxes matrix width parameter');
+        }
 
         let step = 100;
-        let bound = matrixWidth / 2 * step;
+        let bound = width / 2 * step;
 
         for (let i = -bound; i < bound; i += step) {
             for (let j = -bound; j < bound; j += step) {
-                console.log('bla!');
                 let box = this.makeBox(i, j, Math.random() * 500 - 250);
                 this.scene.add(box);
             }
@@ -187,9 +191,15 @@ class BoxScene {
 let boxScene = new BoxScene(THREE);
 
 
-boxScene.init();
-boxScene.populateBoxes(10);
-boxScene.animate();
+try {
+    boxScene.init();
+    boxScene.populateBoxes(10);
+    boxScene.animate();
+} catch(err) {
+    console.error(err);
+}
+
+
 
 
 })(THREE);
