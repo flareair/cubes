@@ -94,7 +94,7 @@ class BoxScene {
     makeBox(x = 0, y = 0, z = 0) {
 
         // create basic wireframe box
-        let cubeGeometry = new this.three.BoxGeometry( 40, 40, 40 );
+        let cubeGeometry = new this.three.BoxGeometry(40, 40, 40);
         let cube = new this.three.Mesh(cubeGeometry, new this.three.MeshBasicMaterial({
             color: 'black',
             wireframe: true
