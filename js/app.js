@@ -2,8 +2,13 @@
 'use strict';
 
 
+/** Class representing a scene of boxes. */
 
 class BoxScene {
+    /**
+     * Create a boxScene.
+     * @param {object} THREE - three.js class.
+     */
     constructor(THREE) {
         this.three = THREE;
 
@@ -26,6 +31,11 @@ class BoxScene {
         };
 
     }
+
+    /**
+     * Init function.
+     * @return {object} Canvas container.
+     */
     init() {
 
         // camera settings
@@ -74,7 +84,13 @@ class BoxScene {
         return this.container;
     }
 
-    // make box
+    /**
+     * Make one box (group of cube and 8 spheres)
+     * @param {number} x - x coordinate.
+     * @param {number} y - y coordinate.
+     * @param {number} z - z coordinate.
+     * @return {object} Box object.
+     */
     makeBox(x = 0, y = 0, z = 0) {
 
         // create basic wireframe box
@@ -119,7 +135,11 @@ class BoxScene {
         return group;
     }
 
-    // populate matrixWidth^2 boxes
+    /**
+     * Make one box (group of cube and 8 spheres)
+     * @param {number} width - width of resulting box matrix.
+     * @return {number} Number of created boxes.
+     */
     populateBoxes(width = 10) {
 
         if (!(Number(width) === width && width % 1 === 0 && width > 0)) {
@@ -144,7 +164,7 @@ class BoxScene {
         return boxNumber;
     }
 
-    // render scene
+    /* Renders scene*/
     render() {
         // console.log(this.animate)
         this.controls.update();
@@ -153,7 +173,10 @@ class BoxScene {
 
     }
 
-    // on mouse click
+    /**
+     * Fires on mouse click
+     * @param {object} event - click event.
+     */
     onDocumentMouseDown(event) {
 
         event.preventDefault();
@@ -180,7 +203,7 @@ class BoxScene {
         }
 
     }
-    // recalculate camero on window resize
+    /* Fires then window resized */
     onWindowResize() {
 
         this.camera.aspect = window.innerWidth / window.innerHeight;
