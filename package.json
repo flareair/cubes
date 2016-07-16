@@ -2,7 +2,7 @@
   "name": "cubes",
   "version": "1.0.0",
   "description": "",
-  "main": "index.js",
+  "main": "index.html",
   "dependencies": {
     "normalize.css": "^4.2.0",
     "three.js": "^0.77.1"
