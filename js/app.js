@@ -104,15 +104,11 @@ function init() {
 
         });
 
-
+        // set position
         group.position.set(x, y, z);
 
         // randomize rotation
-
-        group.rotation.x = Math.random() * 2 * Math.PI;
-        group.rotation.y = Math.random() * 2 * Math.PI;
-        group.rotation.z = Math.random() * 2 * Math.PI;
-
+        group.rotation.set(Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI, Math.random() * 2 * Math.PI);
 
         return group;
     }
