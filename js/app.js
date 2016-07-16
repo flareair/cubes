@@ -1,97 +1,104 @@
-(function() {
-
-
+(function(THREE) {
 'use strict';
 
-let container;
-let camera, controls, scene, renderer;
-let clickable = [];
-
-let raycaster = new THREE.Raycaster();
-let mouse = new THREE.Vector2();
-
-init();
-animate();
-
-// init view
-function init() {
 
 
-    // append container to dom
+class BoxScene {
+    constructor(THREE) {
+        this.three = THREE;
 
-    container = document.createElement( 'div' );
+        this.raycaster = new this.three.Raycaster();
+        this.mouse = new this.three.Vector2();
 
-    document.body.appendChild(container);
+        this.clickable = [];
 
-    // camera settings
-    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100000);
-    camera.position.z = 400;
+        this.container = {};
+        this.camera = {};
+        this.controls = {};
+        this.scene = {};
+        this.renderer = {};
 
-    // trackball settings
-    controls = new THREE.TrackballControls(camera);
-    controls.rotateSpeed = 1.0;
-    controls.zoomSpeed = 1.2;
-    controls.panSpeed = 0.8;
-    controls.noZoom = false;
-    controls.noPan = false;
-    controls.staticMoving = true;
-    controls.dynamicDampingFactor = 0.3;
+        this.animate = () => {
 
-    scene = new THREE.Scene();
+            requestAnimationFrame(this.animate);
+            this.render();
+        };
+
+    }
+    init() {
+
+        // camera settings
+        this.camera = new this.three.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100000);
+        this.camera.position.z = 400;
+
+        // trackball settings
+        this.controls = new this.three.TrackballControls(this.camera);
+        this.controls.rotateSpeed = 1.0;
+        this.controls.zoomSpeed = 1.2;
+        this.controls.panSpeed = 0.8;
+        this.controls.noZoom = false;
+        this.controls.noPan = false;
+        this.controls.staticMoving = true;
+        this.controls.dynamicDampingFactor = 0.3;
+
+        this.scene = new this.three.Scene();
 
 
-    // lights
-    scene.add(new THREE.AmbientLight(0x505050));
+        // lights
+        this.scene.add(new this.three.AmbientLight(0x505050));
 
-    let light = new THREE.SpotLight(0xffffff, 1.5);
-    light.position.set(0, 500, 2000);
+        let light = new this.three.SpotLight(0xffffff, 1.5);
+        light.position.set(0, 500, 2000);
 
-    scene.add(light);
+        this.scene.add(light);
 
+        // renderer
+        this.renderer = new this.three.WebGLRenderer({
+            antialias: true
+        });
+        this.renderer.setClearColor(0xf0f0f0);
+        this.renderer.setPixelRatio(window.devicePixelRatio);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.sortObjects = false;
 
-    // pupulate meshes
-    populateBoxes();
+        this.renderer.shadowMap.enabled = true;
+        this.renderer.shadowMap.type = this.three.PCFShadowMap;
 
+        // make container
+        this.container = document.createElement('div');
+        document.body.appendChild(this.container);
+        // append canvas
+        this.container.appendChild(this.renderer.domElement);
 
-    // renderer settings
-    renderer = new THREE.WebGLRenderer({
-        antialias: true
-    });
-    renderer.setClearColor(0xf0f0f0);
-    renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize(window.innerWidth, window.innerHeight);
-    renderer.sortObjects = false;
+        // event listeners
+        document.addEventListener('mousedown', this.onDocumentMouseDown.bind(this), false);
+        window.addEventListener('resize', this.onWindowResize.bind(this), false);
+    }
 
-    renderer.shadowMap.enabled = true;
-    renderer.shadowMap.type = THREE.PCFShadowMap;
-
-    // append canvas
-    container.appendChild(renderer.domElement);
-
-    // make box with coordinates x, y, z
-    function makeBox(x = 0, y = 0, z = 0) {
+    // make box
+    makeBox(x = 0, y = 0, z = 0) {
 
         // create basic wireframe box
-        let cubeGeometry = new THREE.BoxGeometry( 40, 40, 40 );
-        let cube = new THREE.Mesh(cubeGeometry, new THREE.MeshBasicMaterial({
+        let cubeGeometry = new this.three.BoxGeometry( 40, 40, 40 );
+        let cube = new this.three.Mesh(cubeGeometry, new this.three.MeshBasicMaterial({
             color: 'black',
             wireframe: true
         }));
 
         // init group and add box where, cube be always at 0 index
-        let group = new THREE.Object3D();
+        let group = new this.three.Object3D();
         group.add(cube);
 
 
         // spheres geometry
-        let sphereGeometry = new THREE.SphereGeometry(3, 32, 32);
+        let sphereGeometry = new this.three.SphereGeometry(3, 32, 32);
 
 
         // iterate cube vertices
         cubeGeometry.vertices.forEach((vertice) => {
 
             // make sphere mesh with random color
-            let sphere = new THREE.Mesh(sphereGeometry, new THREE.MeshBasicMaterial( {color: Math.random() * 0xffffff}));
+            let sphere = new this.three.Mesh(sphereGeometry, new this.three.MeshBasicMaterial( {color: Math.random() * 0xffffff}));
 
             // move sphere to vertice
             sphere.position.x = vertice.x;
@@ -100,7 +107,7 @@ function init() {
 
 
             group.add(sphere);
-            clickable.push(sphere);
+            this.clickable.push(sphere);
 
         });
 
@@ -113,28 +120,42 @@ function init() {
         return group;
     }
 
-    // populate 100 boxes
-    function populateBoxes() {
-        for (let i = -500; i < 500; i += 100) {
-            for (let j = -500; j < 500; j += 100) {
-                let box = makeBox(i, j, Math.random() * 500 - 250);
-                scene.add(box);
+    // populate matrixWidth^2 boxes
+    populateBoxes(matrixWidth = 10) {
+
+        let step = 100;
+        let bound = matrixWidth / 2 * step;
+
+        for (let i = -bound; i < bound; i += step) {
+            for (let j = -bound; j < bound; j += step) {
+                console.log('bla!');
+                let box = this.makeBox(i, j, Math.random() * 500 - 250);
+                this.scene.add(box);
             }
         }
     }
 
+    // render scene
+    render() {
+        // console.log(this.animate)
+        this.controls.update();
+
+        this.renderer.render(this.scene, this.camera);
+
+    }
+
     // on mouse click
-    function onDocumentMouseDown(event) {
+    onDocumentMouseDown(event) {
 
         event.preventDefault();
 
         // calculate mouse position
-        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
-        mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
+        this.mouse.x = (event.clientX / this.renderer.domElement.clientWidth) * 2 - 1;
+        this.mouse.y = - (event.clientY / this.renderer.domElement.clientHeight) * 2 + 1;
 
-        raycaster.setFromCamera(mouse, camera);
+        this.raycaster.setFromCamera(this.mouse, this.camera);
 
-        let intersects = raycaster.intersectObjects(clickable);
+        let intersects = this.raycaster.intersectObjects(this.clickable);
 
 
         // if intersects present take first
@@ -150,41 +171,25 @@ function init() {
         }
 
     }
-
     // recalculate camero on window resize
-    function onWindowResize() {
+    onWindowResize() {
 
-      camera.aspect = window.innerWidth / window.innerHeight;
-      camera.updateProjectionMatrix();
+        this.camera.aspect = window.innerWidth / window.innerHeight;
+        this.camera.updateProjectionMatrix();
 
-      renderer.setSize(window.innerWidth, window.innerHeight);
+        this.renderer.setSize(window.innerWidth, window.innerHeight);
 
     }
 
-    // event listeners
-    document.addEventListener('mousedown', onDocumentMouseDown, false);
-    window.addEventListener('resize', onWindowResize, false);
-
-}
-
-// animate
-function animate() {
-
-  requestAnimationFrame(animate);
-
-  render();
-
 }
 
 
-// render scene
-function render() {
-
-  controls.update();
-
-  renderer.render(scene, camera);
-
-}
+let boxScene = new BoxScene(THREE);
 
 
-})();
+boxScene.init();
+boxScene.populateBoxes(10);
+boxScene.animate();
+
+
+})(THREE);
