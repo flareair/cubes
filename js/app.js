@@ -24,11 +24,11 @@ function init() {
     document.body.appendChild(container);
 
     // camera settings
-    camera = new THREE.PerspectiveCamera( 70, window.innerWidth / window.innerHeight, 1, 100000);
+    camera = new THREE.PerspectiveCamera(70, window.innerWidth / window.innerHeight, 1, 100000);
     camera.position.z = 400;
 
     // trackball settings
-    controls = new THREE.TrackballControls( camera );
+    controls = new THREE.TrackballControls(camera);
     controls.rotateSpeed = 1.0;
     controls.zoomSpeed = 1.2;
     controls.panSpeed = 0.8;
@@ -59,14 +59,14 @@ function init() {
     });
     renderer.setClearColor(0xf0f0f0);
     renderer.setPixelRatio(window.devicePixelRatio);
-    renderer.setSize( window.innerWidth, window.innerHeight );
+    renderer.setSize(window.innerWidth, window.innerHeight);
     renderer.sortObjects = false;
 
     renderer.shadowMap.enabled = true;
     renderer.shadowMap.type = THREE.PCFShadowMap;
 
     // append canvas
-    container.appendChild( renderer.domElement );
+    container.appendChild(renderer.domElement);
 
     // make box with coordinates x, y, z
     function makeBox(x = 0, y = 0, z = 0) {
@@ -124,13 +124,13 @@ function init() {
     }
 
     // on mouse click
-    function onDocumentMouseDown( event ) {
+    function onDocumentMouseDown(event) {
 
         event.preventDefault();
 
         // calculate mouse position
-        mouse.x = ( event.clientX / renderer.domElement.clientWidth ) * 2 - 1;
-        mouse.y = - ( event.clientY / renderer.domElement.clientHeight ) * 2 + 1;
+        mouse.x = (event.clientX / renderer.domElement.clientWidth) * 2 - 1;
+        mouse.y = - (event.clientY / renderer.domElement.clientHeight) * 2 + 1;
 
         raycaster.setFromCamera(mouse, camera);
 
@@ -157,13 +157,13 @@ function init() {
       camera.aspect = window.innerWidth / window.innerHeight;
       camera.updateProjectionMatrix();
 
-      renderer.setSize( window.innerWidth, window.innerHeight );
+      renderer.setSize(window.innerWidth, window.innerHeight);
 
     }
 
     // event listeners
-    document.addEventListener( 'mousedown', onDocumentMouseDown, false );
-    window.addEventListener( 'resize', onWindowResize, false );
+    document.addEventListener('mousedown', onDocumentMouseDown, false);
+    window.addEventListener('resize', onWindowResize, false);
 
 }
 
