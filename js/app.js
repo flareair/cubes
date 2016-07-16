@@ -1,4 +1,4 @@
-(function(THREE) {
+(function(THREE, window, document) {
 'use strict';
 
 
@@ -67,13 +67,11 @@ class BoxScene {
 
         // make container
         this.container = document.createElement('div');
-        document.body.appendChild(this.container);
         // append canvas
         this.container.appendChild(this.renderer.domElement);
 
-        // event listeners
-        document.addEventListener('mousedown', this.onDocumentMouseDown.bind(this), false);
-        window.addEventListener('resize', this.onWindowResize.bind(this), false);
+
+        return this.container;
     }
 
     // make box
@@ -192,9 +190,19 @@ let boxScene = new BoxScene(THREE);
 
 
 try {
-    boxScene.init();
+    let container = boxScene.init();
+
+
+    document.body.appendChild(container);
+
+
     boxScene.populateBoxes(10);
     boxScene.animate();
+
+    // event listeners
+    document.addEventListener('mousedown', boxScene.onDocumentMouseDown.bind(boxScene), false);
+    window.addEventListener('resize', boxScene.onWindowResize.bind(boxScene), false);
+
 } catch(err) {
     console.error(err);
 }
@@ -202,4 +210,4 @@ try {
 
 
 
-})(THREE);
+})(THREE, window, document);
